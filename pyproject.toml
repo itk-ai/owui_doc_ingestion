@@ -1,6 +1,14 @@
 [project]
-name = "test-doc-ingestion"
+name = "owui-doc-ingestion"
 version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "langchain-core>=0.3.66",
+    "python-dotenv>=1.1.1",
+    "requests>=2.32.4",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
