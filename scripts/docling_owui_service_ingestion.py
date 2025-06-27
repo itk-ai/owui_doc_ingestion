@@ -29,7 +29,7 @@ def main():
     url = set_url_username_password(DOCLING_SERVER_URL, DOCLING_SERVER_USER, DOCLING_SERVER_PWD)
     docs: List[Document] = []
     for file_path in args.file_paths:
-        loader = DoclingLoader(url, file_path, params={})
+        loader = DoclingLoader(url, file_path, params=DOCLING_PARAMS)
         docs = docs + loader.load()
 
 
