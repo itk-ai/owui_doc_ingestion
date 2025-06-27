@@ -1,0 +1,21 @@
+schema: '2.0'
+stages:
+  tika-process:
+    cmd: python scripts/tika_owui_service_ingestion.py data/vielse/manually_extracted/*
+      --out_folder data/vielse/tika_processed
+    deps:
+    - path: data/vielse/manually_extracted/
+      hash: md5
+      md5: 2c6813977a3ae27ef47ae3e302cb23bc.dir
+      size: 28660297
+      nfiles: 8
+    - path: scripts/tika_owui_service_ingestion.py
+      hash: md5
+      md5: 8125d3c8762e8287f367fa55f59ef171
+      size: 1189
+    outs:
+    - path: data/vielse/tika_processed/
+      hash: md5
+      md5: 4a42c923d09113cfc9e596236641d6a2.dir
+      size: 360429
+      nfiles: 8
