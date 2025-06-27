@@ -8,6 +8,7 @@ dependencies = [
     "langchain-core>=0.3.66",
     "pytest>=8.4.1",
     "python-dotenv>=1.1.1",
+    "python-magic>=0.4.27",
     "requests>=2.32.4",
 ]
 
