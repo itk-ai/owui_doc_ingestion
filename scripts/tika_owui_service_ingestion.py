@@ -16,6 +16,8 @@ PDF_EXTRACT_IMAGES = os.getenv('PDF_EXTRACT_IMAGES',False).lower() in ['true', '
 def main():
     parser = argparse.ArgumentParser(description="Process a list of file paths.")
     parser.add_argument('file_paths', nargs='+', help='List of paths to files')
+    parser.add_argument("--out_folder", help="Output folder for extracted text, default is same folder as input file",
+                        default=None)
 
     args = parser.parse_args()
     url = set_url_username_password(TIKA_SERVER_URL, TIKA_SERVER_USER, TIKA_SERVER_PWD)
