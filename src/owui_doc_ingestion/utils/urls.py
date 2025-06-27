@@ -1,5 +1,6 @@
 from urllib.parse import urlparse, quote
 
+# From https://stackoverflow.com/questions/52359488/update-add-username-in-url-in-python
 def set_url_username_password(url, username, password):
     """
     Sets the URL, username, and password for authentication or configuration purposes.
