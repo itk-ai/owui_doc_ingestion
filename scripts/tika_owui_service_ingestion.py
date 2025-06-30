@@ -23,13 +23,13 @@ def main():
 
     args = parser.parse_args()
     url = set_url_username_password(TIKA_SERVER_URL, TIKA_SERVER_USER, TIKA_SERVER_PWD)
-    with MetricsDatabaseConnection() as conn:
+    with MetricsDatabaseConnection() as metric_db:
         for file_path in args.file_paths:
             loader = TikaLoader(url, file_path, extract_images= PDF_EXTRACT_IMAGES)
             start_time = time.time()
             docs = loader.load()
             processing_time = time.time() - start_time
-            conn.save_metrics('tika', file_path, processing_time)
+            metric_db.save_metrics('tika', file_path, processing_time)
 
             save_docs_to_md(docs, file_path, args.out_folder)
 

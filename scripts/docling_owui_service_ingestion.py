@@ -29,13 +29,13 @@ def main():
 
     args = parser.parse_args()
     url = set_url_username_password(DOCLING_SERVER_URL, DOCLING_SERVER_USER, DOCLING_SERVER_PWD)
-    with MetricsDatabaseConnection() as conn:
+    with MetricsDatabaseConnection() as metric_db:
         for file_path in args.file_paths:
             loader = DoclingLoader(url, file_path, params=DOCLING_PARAMS)
             start_time = time.time()
             docs = loader.load()
             processing_time = time.time() - start_time
-            conn.save_metrics('docling', file_path, processing_time)
+            metric_db.save_metrics('docling', file_path, processing_time)
 
             save_docs_to_md(docs, file_path, args.out_folder)
 

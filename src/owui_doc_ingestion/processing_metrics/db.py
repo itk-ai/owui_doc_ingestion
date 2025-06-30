@@ -6,11 +6,12 @@ from ..utils.mime_type import get_mime_type
 from ..utils.doc_io import get_page_count, calculate_file_hash
 
 class MetricsDatabaseConnection:
-    def __init__(self, db_path: str = "document_processing.db"):
+    def __init__(self, db_path: str = "processing_metrics/document_processing.db"):
+        os.makedirs(os.path.dirname(db_path), exist_ok=True)
         self.db_path = db_path
         self.conn = None
 
-    def __enter__(self):
+    def __enter__(self) -> "MetricsDatabaseConnection":
         """Initialize SQLite database with required table."""
         self.conn = sqlite3.connect(self.db_path)
         self.cursor = self.conn.cursor()
@@ -29,6 +30,7 @@ class MetricsDatabaseConnection:
                        )
                        ''')
         self.conn.commit()
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.conn:
@@ -51,6 +53,6 @@ class MetricsDatabaseConnection:
         self.cursor.execute('''
                        INSERT INTO processing_metrics
                        (timestamp, ingest_method, file_path, file_size, file_hash, mime_type, page_count, processing_time)
-                       VALUES (?, ?, ?, ?, ?, ?, ?)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                        ''', (timestamp, ingestion_method, file_path, file_size, file_hash, mime_type, page_count, processing_time))
         self.conn.commit()
