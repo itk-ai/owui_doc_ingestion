@@ -1,9 +1,11 @@
 import os
 import argparse
+import time
 from dotenv import load_dotenv
 from owui_doc_ingestion.doc_loaders.tika import TikaLoader
 from owui_doc_ingestion.utils.urls import set_url_username_password
 from owui_doc_ingestion.utils.doc_io import save_docs_to_md
+from owui_doc_ingestion.processing_metrics.db import MetricsDatabaseConnection
 
 load_dotenv()
 
@@ -21,10 +23,15 @@ def main():
 
     args = parser.parse_args()
     url = set_url_username_password(TIKA_SERVER_URL, TIKA_SERVER_USER, TIKA_SERVER_PWD)
-    for file_path in args.file_paths:
-        loader = TikaLoader(url, file_path, extract_images= PDF_EXTRACT_IMAGES)
-        docs = loader.load()
-        save_docs_to_md(docs, file_path, args.out_folder)
+    with MetricsDatabaseConnection() as conn:
+        for file_path in args.file_paths:
+            loader = TikaLoader(url, file_path, extract_images= PDF_EXTRACT_IMAGES)
+            start_time = time.time()
+            docs = loader.load()
+            processing_time = time.time() - start_time
+            conn.save_metrics('tika', file_path, processing_time)
+
+            save_docs_to_md(docs, file_path, args.out_folder)
 
 
 if __name__ == "__main__":
