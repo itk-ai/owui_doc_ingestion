@@ -3,7 +3,7 @@ import sqlite3
 from datetime import datetime
 import os
 from ..utils.mime_type import get_mime_type
-from ..utils.doc_io import get_page_count
+from ..utils.doc_io import get_page_count, calculate_file_hash
 
 class MetricsDatabaseConnection:
     def __init__(self, db_path: str = "document_processing.db"):
@@ -22,6 +22,7 @@ class MetricsDatabaseConnection:
                            ingest_method TEXT,
                            file_path TEXT,
                            file_size INTEGER,
+                           file_hash TEXT,
                            mime_type TEXT,
                            page_count INTEGER,
                            processing_time REAL
@@ -42,13 +43,14 @@ class MetricsDatabaseConnection:
         """Save processing metrics to database."""
         file_size = os.path.getsize(file_path)
         timestamp = datetime.now().isoformat()
+        file_hash = calculate_file_hash(file_path)
 
         mime_type = get_mime_type(file_path)
         page_count = get_page_count(file_path,mime_type)
 
         self.cursor.execute('''
                        INSERT INTO processing_metrics
-                       (timestamp, ingest_method, file_path, file_size, mime_type, page_count, processing_time)
+                       (timestamp, ingest_method, file_path, file_size, file_hash, mime_type, page_count, processing_time)
                        VALUES (?, ?, ?, ?, ?, ?, ?)
-                       ''', (timestamp, ingestion_method, file_path, file_size, mime_type, page_count, processing_time))
+                       ''', (timestamp, ingestion_method, file_path, file_size, file_hash, mime_type, page_count, processing_time))
         self.conn.commit()

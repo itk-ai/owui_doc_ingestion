@@ -1,5 +1,5 @@
 # Script written in colab with pycharm AI assistent (using Claude 3.5 Sonnet)
-import os
+import hashlib
 import os
 import zipfile
 import xml.dom.minidom
@@ -37,7 +37,6 @@ def save_docs_to_md(docs, base_filepath, out_folder=None):
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(doc.page_content)
 
-
 def get_page_count(file_path:str, mime_type:str) -> int | None:
     """Get page count based on file type using appropriate library."""
     try:
@@ -58,3 +57,12 @@ def get_page_count(file_path:str, mime_type:str) -> int | None:
     except Exception as e:
         print(f"Error getting page count for {file_path}: {str(e)}")
         return None
+
+def calculate_file_hash(file_path: str) -> str:
+    """Calculate MD5 hash of a file."""
+    md5_hash = hashlib.md5()
+    with open(file_path, "rb") as f:
+        # Read the file in chunks to handle large files efficiently
+        for byte_block in iter(lambda: f.read(4096), b""):
+            md5_hash.update(byte_block)
+    return md5_hash.hexdigest()
