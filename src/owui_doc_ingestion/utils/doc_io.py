@@ -1,7 +1,8 @@
 # Script written in colab with pycharm AI assistent (using Claude 3.5 Sonnet)
 import os
-import os, zipfile, xml.dom.minidom, sys
-from docx import Document
+import os
+import zipfile
+import xml.dom.minidom
 from pypdf import PdfReader
 
 
@@ -48,9 +49,9 @@ def get_page_count(file_path:str, mime_type:str) -> int | None:
                            'application/msword']:
             # Method from https://github.com/muhammadmoazzam/word-page-count/blob/master/word-page.py
             doc = zipfile.ZipFile(file_path)
-            dxml = doc.read('docProps/app.xml')
-            ugly_xml = xml.dom.minidom.parseString(dxml)
-            page_nb = int(ugly_xml.getElementsByTagName('Pages')[0].childNodes[0].nodeValue)
+            doc_xml = doc.read('docProps/app.xml')
+            parsed_xml = xml.dom.minidom.parseString(doc_xml)
+            page_nb = int(parsed_xml.getElementsByTagName('Pages')[0].childNodes[0].nodeValue)
 
             return page_nb
         return None
