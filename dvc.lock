@@ -11,8 +11,8 @@ stages:
       nfiles: 8
     - path: scripts/tika_owui_service_ingestion.py
       hash: md5
-      md5: 8125d3c8762e8287f367fa55f59ef171
-      size: 1189
+      md5: 01da5fd730c1413e0b25cf71bb7008a4
+      size: 1511
     outs:
     - path: data/vielse/tika_processed/
       hash: md5
@@ -30,8 +30,8 @@ stages:
       nfiles: 8
     - path: scripts/docling_owui_service_ingestion.py
       hash: md5
-      md5: d22a11cdfcd3ad381a91cb0f677a629e
-      size: 1584
+      md5: eede764c6106792a601c1e81f22bfd5a
+      size: 1907
     outs:
     - path: data/vielse/docling_processed/
       hash: md5
