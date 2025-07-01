@@ -25,9 +25,9 @@ Det manuelt hentede data ligger i mappen [manually_extracted](data/vielse/manual
 - [Hvem skal registrer en vielse og navneændring](data/vielse/manually_extracted/Hvem skal registrer en vielse og navneændring.docx)
 - [Verdens lande](data/vielse/manually_extracted/Verdens lande.docx)
 
-## Infomail fra Janni:
+## Infomail:
 
-> Hej Daniel
+> Hej
 > 
 > Hermed de dokumenter som jeg har lagt ind i Vielsesassistenten 😊
 > 
@@ -39,9 +39,5 @@ Det manuelt hentede data ligger i mappen [manually_extracted](data/vielse/manual
 > 
 > Liste over specielle krav til dokumenter som ligger på Familieretshusets hjemmeside [Oversigt udenlandske vielser](https://familieretshuset.dk/brud-i-familien/anerkendelser/oversigt-udenlandske-vielser-og-skilsmisser) – denne liste har jeg foldet alle ”fold ud” og gemt som PDF i 4 filer, da en samlet fil var for stor til at kunne indlæse i Vielsesassistenten
 > 
-> Med venlig hilsen  
-> Janni Søvang  
-> Borgerbetjeningen  
-> Direkte tlf. 2920 4353  
-> Mail janni@aarhus.dk 
+> 
 
