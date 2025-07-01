@@ -1,4 +1,8 @@
 .env
 .idea/*
 data/*
+
+# SQLite metrics db
+processing_metrics/document_processing.db
+
 uv.lock
