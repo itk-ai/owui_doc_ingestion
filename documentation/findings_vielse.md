@@ -25,11 +25,13 @@ in OWUI.
 
 ### Table of content
 
-- [Headings](#Headings)
-- [Listings](#Listings)
-- [Footers](#Footers-incl-page-numbering)
-- [Links](#Links)
+- [Headings](#headings)
+- [Listings](#listings)
+- [Footers](#footers-incl-page-numbering)
+- [Links](#links)
+- [Tables](#tables)
 - [General markup](#general-markup)
+- [PDFs with (only) full page images](#ocr-performance--pdfs-with-only-full-page-images)
 
 ## Headings
 
@@ -418,6 +420,125 @@ because it is only identified as a heading.
   in order to do so, the link is needed in the raw material, so here *Docling*
   is prefere over *Tika*
 
+## Tables
+
+*Docling* recognises tables and outputs markdown-tables but as seen below this
+is also sometimes cause confusion as it is not consistent in what is interpreted
+as lists and tables:
+
+![Example of a table of content that could look like a table or a list](screendumps/table_list_confusion-Vejledning_om_behandling_af_ægteskabssager.png "ToC from a pdf")
+
+*Docling* transcribes this as:
+
+> ```markdown
+> | 2.6.1.4.   | Ægtefællerne var separerede ved dødsfaldet                                                                                               |
+> | 2.6.1.5.   | Arvingerne efter afdøde giver samtykke til indgåelse af nyt ægteskab                                                                     |
+> 
+> | 2.6.1.6.   | Den længstlevende ægtefælle sidder i uskiftet bo                   |
+> |------------|--------------------------------------------------------------------|
+> | 2.6.1.7.   | Skiftefritagelse                                                   |
+> | 2.6.2.     | Dødsboet behandles ikke i Danmark                                  |
+> | 2.6.3.     | Indgåelse af nyt ægteskab efter skilsmisse                         |
+> | 2.7.       | Lovligt ophold, herunder dispensation                              |
+> | 2.8.       | Eventuel erklæring om kendskab til reglerne om familiesammenføring |
+> | 2.9.       | Evne til at handle fornuftsmæssigt                                 |
+> | 2.10.      | Dobbeltvielse                                                      |
+> | 2.11.      | Proformaægteskab                                                   |
+> | 2.12.      | Falske dokumenter                                                  |
+> 
+> ## Kapitel 3: Borgerlig vielse
+> 
+> - 3.1. Grundlaget for borgerlige vielser
+> - 3.2. Hvem kan foretage borgerlige vielser
+> ```
+
+which is just inconsistent. The fact that the first item in the ToC after a
+newpage becomes a header in the table gives more confusing than structure, but
+whether it would be critical for an advanced LLM I don't think so.
+
+But for an actual table like:
+
+![Table with 6 columns and many rows](screendumps/table-Verdens_lande.png "Large docx table")
+
+*Docling*s transcribtion:
+
+> ```markdown
+> |     | Kræves der legalisering af dokumenter   | Kan der indhentes civilstand/ prøvelsesattest   | Kan der laves en Apostillepåtegning?   | Medlem af Schengen ?   | Visumpligtig?                                  | Andet                                                                                                                                                         |
+> |-----|-----------------------------------------|-------------------------------------------------|----------------------------------------|------------------------|------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+> | #1  | Ja                                      | Ja – OBS kan pt ikke fås fra Kina               | Nej                                    | Nej                    | Ja                                             |                                                                                                                                                               |
+> | #2  | Ja                                      | Ja                                              | Ja                                     | Nej                    | Ja                                             |                                                                                                                                                               |
+> | #3  | Ja                                      | Ja                                              | Nej                                    | Nej                    | Ja                                             | Da mange dokumenter fra de afrikanske lande er falske, skal pas og visum scannes og sendes til godkendelse ved Grænsepolitiet. Andre dokumenter beror på skøn |
+> | #4  | Ja                                      | Ja                                              | Ja                                     | Nej                    | Nej                                            |                                                                                                                                                               |
+> | #5  | Nej                                     | Ja                                              | Ikke nødvendigt                        | Nej                    | Nej                                            | Fra Canada udsteder de ikke civilstandsattester men kan få lavet ”Staement in lieu of certificate of non-impediment”                                          |
+> | #6  | Nej                                     | Ja                                              | Ikke nødvendigt                        | Ja                     | Nej                                            | Fra Østrig kan udlændinge ikke få udstedt civilstandsattest. Kun hvis de er blevet gift i Østrig.                                                             |
+> ```
+
+is far superior to *Tika*s
+
+> ```text
+> 	
+> 	Kræves der legalisering af dokumenter
+> 	Kan der indhentes civilstand/
+> prøvelsesattest
+> 	Kan der laves en Apostillepåtegning?
+> 	Medlem af Schengen ?
+> 	Visumpligtig?
+> 	Andet
+> 
+> 	#1
+> 	Ja
+> 	Ja – OBS kan pt ikke fås fra Kina
+> 	Nej
+> 	Nej
+> 	Ja
+> 	
+> 
+> 	#2
+> 	Ja
+> 	Ja
+> 	Ja
+> 	Nej
+> 	Ja
+> 	
+> 
+> 	#3
+> 	Ja
+> 	Ja
+> 	Nej
+> 	Nej
+> 	Ja
+> 	Da mange dokumenter fra de afrikanske lande er falske, skal pas og visum scannes og sendes til godkendelse ved Grænsepolitiet. Andre dokumenter beror på skøn
+> 
+> 	#4
+> 	Ja
+> 	Ja
+> 	Ja
+> 	Nej
+> 	Nej
+> 	
+> 
+> 	#5
+> 	Nej
+> 	Ja
+> 	Ikke nødvendigt
+> 	Nej
+> 	Nej
+> 	Fra Canada udsteder de ikke civilstandsattester men kan få lavet ”Staement in lieu of certificate of non-impediment”
+>```
+
+But the real question is whether the markdown table from *Docling* would improve
+an LLMs understanding of the content. 
+
+The only way to ensure that the table content is understood would probably be to
+implement a table lookup tool by hand.
+
+### Conclusion/Preferences
+
+- *Docling* is impressive in creating markdown tables whereas *Tika*s table 
+  functionality is non existent
+- The markdown table functionality is only usefull if the LLM can actually 
+  understand the tables and that would require seperate testing.
+
 ## General markup
 
 For bold and italic markup *Docling* seems to do quite well (as least for docx). 
@@ -481,3 +602,58 @@ and *Tika* produces:
   such an extent that it obscurres otherwise very useful markup.
   - Headings are not used consistenly by authors
   - *Docling* does not account for font-size when analysing docx (by default at least)
+
+## OCR performance / PDFs with (only) full page images
+
+For the pdfs printed from [Familieretshusets oversigt udenlandske vielser](
+https://familieretshuset.dk/brud-i-familien/anerkendelser/oversigt-udenlandske-vielser-og-skilsmisser
+) *Docling* with the standard settings detects each page as consisting of an 
+image. This is probably the case, but instead of doing OCR, *Docling* just
+transribes that there are images and so the four pdf are all transcribed as
+
+> ```markdown
+> <!-- image -->
+> 
+> <!-- image -->
+> 
+> <!-- image -->
+> 
+> <!-- image -->
+> 
+> ...
+> ```
+
+In order to circumvent this it is needed to force the OCR. This is not a 
+supported option in OWUI, but it could easily be patched introducing eg. an 
+env-var like `DOCLING_FORCE_OCR` defaulting to 'False', but in this case needed
+to be enabled. The env-var would then need to be propagated through the 
+[`DOCLING_PARAMS`](
+https://github.com/open-webui/open-webui/blob/b5f4c85bb196c16a775802907aedd87366f58b0f/backend/open_webui/routers/retrieval.py#L1363
+) to the [docling loader params](
+https://github.com/open-webui/open-webui/blob/b5f4c85bb196c16a775802907aedd87366f58b0f/backend/open_webui/retrieval/loaders/main.py#L152
+) where it can control the `force_ocr` option.
+
+Important: Even with the OCR forced *Docling* is still able to recognise images,
+which could then be described.
+
+*Tika*s OCR engine struggles with lists. points are transcribed as `e`. 
+Additionally, danish æ, ø and å are not recognised and transcribed in various 
+ways. The text is still relatively easily read and at least some LLMs I would
+assume wouldn't be troubled making sense of the transcribtion.
+
+### Conclusion/preferences
+
+- In order to have *Docling* working decently the force OCR seems to be needed
+  - As of now it is unknown to me if there is a performance degradetion when OCR
+    is forced, if text is actually available in the pdf (or in other document 
+    types) eg. docx.
+    
+    It might be needed to check if text is available from the pdf and ensure that
+    it is indeed a pdf-document before forcing OCR. 
+    That kind of logic would also require extending OWUI
+- When *Docling*s EasyOCR engine kicks in, it generally performs better than 
+  [*Tika*s tesseractOCR engine](https://cwiki.apache.org/confluence/display/TIKA/Configuring+Parsers+At+Parse+Time+in+tika-server).
+  Better performance would be expected at least for the danish characters if it
+  was [configured to expect danish](
+  https://tika.apache.org/2.7.0/api/org/apache/tika/parser/ocr/TesseractOCRConfig.html#setLanguage-java.lang.String-
+  ), like *Docling*s easyOCR is.
