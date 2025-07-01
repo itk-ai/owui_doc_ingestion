@@ -23,6 +23,14 @@ in OWUI.
 - TODO: Set up a direct tika pipeline, where xHTML is outputted and converted to 
         markdown.
 
+### Table of content
+
+- [Headings](#Headings)
+- [Listings](#Listings)
+- [Footers](#Footers-incl-page-numbering)
+- [Links](#Links)
+- [General markup](#general-markup)
+
 ## Headings
 
 Notice: Since *Tika* does not indicate any markup, headings are not indicated in
@@ -378,3 +386,98 @@ within chunks provided to an LLM.
   This, though, have not been tested.
 - To conclude anything finale on the handling of footers additional focused tests
   should be performed.
+
+## Links
+
+*Docling* detects some links. *Tika*s plain text does not.
+
+For two examples from the same word document:
+
+![Link that Docling fail to detect](screendumps/link_detection_fail-Hvem_skal_registrer_en_vielse_og_navneaendring.png "Example of link from docx")
+
+![Link that Docling succesfully detects](screendumps/link_detection_success-Hvem_skal_registrer_en_vielse_og_navneaendring.png "Another example of link from docx")
+
+That *Docling* interprets as
+
+> ```markdown
+> ### OBS: Ved alle registreringer skal vi se den originale vielsesattest som vi tager kopi af, eller have en bekræftet kopi. Samtidig skal alle par udfylde skema ”Oplysninger om udenlandsk vielse” Microsoft Word - Oplysningsskema - til hjemmesiden.docx (familieretshuset.dk)
+> ```
+
+and
+
+> ```markdown
+> Lovgivning om at se original vielsesattest [Ægteskabsvejledningen (retsinformation.dk)](https:/www.retsinformation.dk/eli/retsinfo/2022/10410)
+> ```
+
+respectively. The reason the link is not detected in the first case, might be
+because it is only identified as a heading.
+
+### Conclusion/preference
+
+- It seems very important to be able to provide links to a user through the LLM,
+  in order to do so, the link is needed in the raw material, so here *Docling*
+  is prefere over *Tika*
+
+## General markup
+
+For bold and italic markup *Docling* seems to do quite well (as least for docx). 
+*Tika* only outputs plain text. 
+
+A general example can be seen here
+
+![View from docx where different setting types that are interpreted the same by Docling is marked](screendumps/markup_detection_overall-Hvem_skal_registrer_en_vielse_og_navneaendring.png "General human markup in docx")
+
+Where *Tika* just outputs plain text, *Docling* tries to make sense of the 
+markup. The headlines marked with orange are all marked in word as header level 3
+and this *Docling* trusts, eventhough it seems that for the `OBS: Ved ...` 
+text at the begining "header 3" is just used as a way to put emphasis on the text.
+
+The bold italic text marked with green are also just transcribed as such although 
+the author seems to think the text `For Folke...` is more important as this is set
+with larger types and marked with yellow highlightning.
+
+Finally this also goes for the bold text marked with pink, though one might think 
+that the text `Gældende ...` would more rightly be set as maybe a header level 2.
+
+Finally since the quote from the law tekst is just indented and highligted in grey
+it is not recognised as a quote (it probably would have been if the author had
+used the qoute markup in Word).
+
+If simpler is preferred *Tika* is the way to go, for an example like
+
+![Conditions on procedure written with bold](screendumps/markup_detection-Hvem_skal_registrer_en_vielse_og_navneaendring.png "Word doc with bold text")
+
+where the procedure is conditioned on something, which is marked with bold, then
+maybe an LLM would be more likely to put emphasis on the conditions, when markup
+is used. That'll probably depend on the LLMs training, but from prompt 
+engineering it is my *feeling*, that it is established, that text markup makes a
+difference to LLMs in general.
+
+In this case *Docling* produces
+> ```markdown
+> ### Navneændringer generelt:
+> 
+> **Midlertidigt ophold**
+> 
+> Hvis borger opholder sig midlertidigt i udlandet, skal de søge navneændring i det sogn i Danmark, hvor de har boet sidst. Er borger født i Sønderjylland, skal de søge i den kommune, hvor de er fødselsregistreret.
+> 
+> **Fast ophold og varig tilknytning**
+> 
+> Har borger fast ...
+> ```
+
+and *Tika* produces:
+> ```text
+> Navneændringer generelt:
+> Midlertidigt ophold
+> Hvis borger opholder sig midlertidigt i udlandet, skal de søge navneændring i det sogn i Danmark, hvor de har boet sidst. Er borger født i Sønderjylland, skal de søge i den kommune, hvor de er fødselsregistreret. 
+> Fast ophold og varig tilknytning
+> Har borger fast
+> ```
+
+### Conclusion/Preference
+
+- In everyday use the markup functionality (particularly in word is misused to 
+  such an extent that it obscurres otherwise very useful markup.
+  - Headings are not used consistenly by authors
+  - *Docling* does not account for font-size when analysing docx (by default at least)
