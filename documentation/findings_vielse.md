@@ -657,3 +657,13 @@ assume wouldn't be troubled making sense of the transcribtion.
   was [configured to expect danish](
   https://tika.apache.org/2.7.0/api/org/apache/tika/parser/ocr/TesseractOCRConfig.html#setLanguage-java.lang.String-
   ), like *Docling*s easyOCR is.
+  
+  _It turns out that the [tika server is actually set up with a tessarect danish](
+  https://github.com/ai-platform-infrastructure/tika-docker/blob/e4249224f0ccb5148ba519385293aede5930c1e9/.docker/tika/Dockerfile#L11
+  ) version_. According to [Tikas parser configuration documentation](
+  https://cwiki.apache.org/confluence/display/TIKA/Configuring+Parsers+At+Parse+Time+in+tika-server
+  ) and following the [example referred in the documentation](
+  https://github.com/apache/tika/blob/1164e78085e0045b13c055aafdfe511c1f5dabd5/tika-server/tika-server-standard/src/test/java/org/apache/tika/server/standard/TikaResourceTest.java#L313C1-L313C96
+  ), it should be possible to change the OCR language at parse time by adding the
+  header option `X-Tika-OCR-Language` to eg. `eng+dan` or just `dan`. 
+  The lang-codes used are [ISO 639-2](https://www.loc.gov/standards/iso639-2/php/English_list.php). 
