@@ -12,7 +12,7 @@ https://github.com/open-webui/open-webui/blob/b5f4c85bb196c16a775802907aedd87366
 ) to use *Tika*s text output. 
 This can of course be changed in the OWUI source, but I don't expect xHTML to be
 a good markup language for LLMs. Instead, it would require that the xHTML is then
-parsed as markdown using e.g. pandoc, which would introduce another sted in the 
+parsed as markdown using e.g. pandoc, which would introduce another step in the 
 pipeline.
 
 Note, that also *Docling* can be configured a lot more than the chosen settings
@@ -40,7 +40,7 @@ Notice: Since *Tika* does not indicate any markup, headings are not indicated in
 
 Example of a title:
 
-![Example of title and heading, that Docling interprets as same level headings]screendumps/title_recognition_ex-Bekendtgoerelse_af_lov_om_aegteskabs_indgaaelse_og_oploesning.png "Document title and headings from a pdf")
+![Example of title and heading, that Docling interprets as same level headings](screendumps/title_recognition_ex-Bekendtgoerelse_af_lov_om_aegteskabs_indgaaelse_og_oploesning.png "Document title and headings from a pdf")
 
 *Docling* interprets the title and heading/chapter as headings on same level:
 
