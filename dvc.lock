@@ -11,8 +11,8 @@ stages:
       nfiles: 8
     - path: scripts/tika_owui_service_ingestion.py
       hash: md5
-      md5: 01da5fd730c1413e0b25cf71bb7008a4
-      size: 1511
+      md5: 424a4f34e28f43ae3935233b5fa949c1
+      size: 1974
     outs:
     - path: data/vielse/tika_processed/
       hash: md5
