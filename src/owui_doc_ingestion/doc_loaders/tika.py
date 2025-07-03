@@ -69,7 +69,12 @@ class TikaLoader:
 
             return [Document(page_content=text, metadata=headers)]
         elif r.ok:
-            html_content = r.text
+            #html_content = r.text
+            html_content = r.content.decode('utf-8')
+            # for some reason r.encoding have been set as ISO-8859-1 (latin-1)
+            # and thus r.text are r.content decoded with latin-1 which intraduces
+            # some spurious characters
+
             # Extract Content-Type from meta tag
             content_type_match = re.search(r'<meta name="Content-Type" content="([^"]+)"', html_content)
             if content_type_match:
