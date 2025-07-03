@@ -13,11 +13,15 @@ stages:
       hash: md5
       md5: 424a4f34e28f43ae3935233b5fa949c1
       size: 1974
+    - path: src/owui_doc_ingestion/doc_loaders/tika.py
+      hash: md5
+      md5: 465bbca61920a45db18a85939b89d718
+      size: 3350
     outs:
     - path: data/vielse/tika_processed/
       hash: md5
-      md5: 4a42c923d09113cfc9e596236641d6a2.dir
-      size: 360429
+      md5: 1c4d3f03d20797072b2a9a4d3e7f67c1.dir
+      size: 361510
       nfiles: 8
   docling-process:
     cmd: python scripts/docling_owui_service_ingestion.py data/vielse/manually_extracted/*
@@ -37,4 +41,27 @@ stages:
       hash: md5
       md5: 6e39b32c9b0a28496d64b989d835c047.dir
       size: 252602
+      nfiles: 8
+  tika-md-process:
+    cmd: python scripts/tika_owui_service_ingestion.py data/vielse/manually_extracted/*
+      --out_folder data/vielse/tika_md_processed --output_format md
+    deps:
+    - path: data/vielse/manually_extracted/
+      hash: md5
+      md5: 2c6813977a3ae27ef47ae3e302cb23bc.dir
+      size: 28660297
+      nfiles: 8
+    - path: scripts/tika_owui_service_ingestion.py
+      hash: md5
+      md5: 424a4f34e28f43ae3935233b5fa949c1
+      size: 1974
+    - path: src/owui_doc_ingestion/doc_loaders/tika.py
+      hash: md5
+      md5: 465bbca61920a45db18a85939b89d718
+      size: 3350
+    outs:
+    - path: data/vielse/tika_md_processed/
+      hash: md5
+      md5: 4b3f80c26f6e3b070f64ed8d507c7903.dir
+      size: 375285
       nfiles: 8

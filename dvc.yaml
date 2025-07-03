@@ -7,6 +7,7 @@ stages:
     deps:
       - data/vielse/manually_extracted/
       - scripts/tika_owui_service_ingestion.py
+      - src/owui_doc_ingestion/doc_loaders/tika.py
     outs:
       - data/vielse/tika_processed/
 
@@ -19,6 +20,7 @@ stages:
     deps:
       - data/vielse/manually_extracted/
       - scripts/tika_owui_service_ingestion.py
+      - src/owui_doc_ingestion/doc_loaders/tika.py
     outs:
       - data/vielse/tika_md_processed/
 
