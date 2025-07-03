@@ -4,7 +4,6 @@ import logging
 import sys
 from enum import Enum
 import re
-import pypandoc  # Already requirement (though apparently not used in OWUI)
 from langchain_core.documents import Document
 
 logging.basicConfig(stream=sys.stdout, level='DEBUG')
@@ -83,12 +82,7 @@ class TikaLoader:
                 log.debug("Tika extracted html: %s", cleaned_html)
                 return [Document(page_content=cleaned_html, metadata=headers)]
             if self.output_format == OutputFormat.MD:
-                if self.html2md_engine == "html2text":
-                    md_content = html2text.html2text(cleaned_html)
-                else: #self.html2md_engine == "pandoc":
-                    # Fall back pandoc
-                    md_content = pypandoc.convert_text(cleaned_html, 'md', format='html')  # probably github md instead of pandoc md, pandoc md is a no-go for tables, it gets formatted very nicely for humans, probably not so for machines
-
+                md_content = html2text.html2text(cleaned_html)
                 log.debug("Tika extracted markdown: %s", md_content)
                 return [Document(page_content=md_content, metadata=headers)]
 
