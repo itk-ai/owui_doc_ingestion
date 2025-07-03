@@ -10,6 +10,18 @@ stages:
     outs:
       - data/vielse/tika_processed/
 
+  tika-md-process:
+    cmd: >-
+      python scripts/tika_owui_service_ingestion.py
+      data/vielse/manually_extracted/*
+      --out_folder data/vielse/tika_md_processed
+      --output_format md
+    deps:
+      - data/vielse/manually_extracted/
+      - scripts/tika_owui_service_ingestion.py
+    outs:
+      - data/vielse/tika_md_processed/
+
   docling-process:
     cmd: >-
       python scripts/docling_owui_service_ingestion.py
