@@ -1,5 +1,4 @@
 import html2text
-import markdownify
 import requests
 import logging
 import sys
@@ -84,9 +83,7 @@ class TikaLoader:
                 log.debug("Tika extracted html: %s", cleaned_html)
                 return [Document(page_content=cleaned_html, metadata=headers)]
             if self.output_format == OutputFormat.MD:
-                if self.html2md_engine == "markdownify":
-                    md_content = markdownify.markdownify(cleaned_html)
-                elif self.html2md_engine == "html2text":
+                if self.html2md_engine == "html2text":
                     md_content = html2text.html2text(cleaned_html)
                 else: #self.html2md_engine == "pandoc":
                     # Fall back pandoc
