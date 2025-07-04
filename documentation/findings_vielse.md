@@ -20,6 +20,12 @@ compared to the one used by OWUI, so it now also outputs markdown.
 This have been done in order to also assess *Tika*s ability to extract structure 
 from documents. Choices are documented [here](tika_html2md.md).
 
+In the following we will distinguish OWUI's use of tika's text endpoint and the
+possible use of tika's general endpoint with HTML markup converted to markdown by
+
+- *tika*: OWUIs use of tikas text endpoint
+- *tika[md]*: our pipeline with tikas HTML output converted to markdown
+
 Note, that also *Docling* can be configured a lot more than the chosen settings
 in OWUI.
 
@@ -47,6 +53,7 @@ Example of a title:
 
 ![Example of title and heading, that Docling interprets as same level headings](screendumps/title_recognition_ex-Bekendtgoerelse_af_lov_om_aegteskabs_indgaaelse_og_oploesning.png "Document title and headings from a pdf")
 
+*Tika[md]* does not recognise neither title nor headings. 
 *Docling* interprets the title and heading/chapter as headings on same level:
 
 > ```markdown
@@ -102,6 +109,44 @@ as is the common way that *Docling* interprets this layout throughout that
 document, except for the case of `Ægteskabs omstødelse` after `Kapitel 3`, which
 is considered another level-2 heading (as eg. `Kapitel 2 a` and `Kapitel 3`).
 
+*Tika[md]* on the other hand recognises almost no markup in this snippet:
+> ```markdown
+> Kapitel 2 a Anerkendelse af ægteskaber, der er indgået i udlandet
+> 
+> § 22 b. Et ægteskab, der er indgået i udlandet, anerkendes, hvis ægteskabet er
+> gyldigt i det land, hvor ægteskabet er indgået, jf. dog stk. 2.
+> 
+> Stk. 2. Et ægteskab, der er indgået i udlandet, anerkendes ikke, 1) hvis
+> parterne ikke var samtidig til stede ved vielsen, 2) hvis der er bestemte
+> grunde til at antage, at der er tale om et proformaægteskab, der blev indgået
+> med
+> 
+> det afgørende formål at opnå ret til ophold i Danmark, i et land, der er
+> tilsluttet Den Europæiske Uni- on eller er omfattet af aftalen om Det
+> Europæiske Økonomiske Samarbejdsområde, eller i Schweiz,
+> 
+> 3) hvis en part ved vielsen ikke var fyldt 18 år, eller 4) hvis anerkendelse
+> af ægteskabet strider mod grundlæggende danske retsprincipper.
+> 
+> Stk. 3. Uanset stk. 2 anerkendes ægteskabet, hvis der foreligger tvingende
+> grunde herfor og parterne stilles i en urimelig situation, hvis ægteskabet
+> ikke anerkendes.
+> 
+> Stk. 4. Betingelsen i stk. 2, nr. 3, gælder ikke for EU-/EØS-borgere og disses
+> ægtefæller.
+> 
+> § 22 c. Et registreret partnerskab, der er indgået i udlandet, anerkendes,
+> hvis betingelserne i § 22 b er opfyldt og retsvirkningerne af partnerskabet
+> svarer til retsvirkningerne af registreret partnerskab efter dansk ret.
+> 
+> Kapitel 3 Ægteskabs omstødelse
+> 
+> § 23. Et ægteskab omstødes, hvis det er indgået i strid med § 6 eller § 9.
+> ```
+
+but *Tika[md]* manage to recognise the names of the chapters (headlines, though 
+they are not marked as headlines).
+
 As the [document](https://www.retsinformation.dk/eli/lta/2019/771) originates 
 from [retsinfo.dk](www.retsinformation.dk) it is possible to get an authoritative
 interpretation of the layout thought the [`xml`-interface](
@@ -114,14 +159,8 @@ more correct markdown interpretation would be
 ## Kapitel 2 a: Anerkendelse af ægteskaber, der er indgået i udlandet
 
 - § 22 b. Et ægteskab, der er indgået i udlandet, anerkendes, hvis ægteskabet er gyldigt i det land, hvor ægteskabet er indgået, jf. dog stk. 2.
-- Stk. 2. Et ægteskab, der er indgået i udlandet, anerkendes ikke,
-- 1) hvis parterne ikke var samtidig til stede ved vielsen,
-- 2) hvis der er bestemte grunde til at antage, at der er tale om et proformaægteskab, der blev indgået med det afgørende formål at opnå ret til ophold i Danmark, i et land, der er tilsluttet Den Europæiske Union eller er omfattet af aftalen om Det Europæiske Økonomiske Samarbejdsområde, eller i Schweiz,
-- 3) hvis en part ved vielsen ikke var fyldt 18 år, eller
-- 4) hvis anerkendelse af ægteskabet strider mod grundlæggende danske retsprincipper.
-- Stk.  3. Uanset  stk.  2  anerkendes  ægteskabet,  hvis  der  foreligger  tvingende  grunde  herfor  og  parterne stilles i en urimelig situation, hvis ægteskabet ikke anerkendes.
-- Stk. 4. Betingelsen i stk. 2, nr. 3, gælder ikke for EU-/EØS-borgere og disses ægtefæller.
-- §  22  c. Et  registreret  partnerskab,  der  er  indgået  i  udlandet,  anerkendes,  hvis  betingelserne  i  §  22  b er opfyldt og retsvirkningerne af partnerskabet svarer til retsvirkningerne af registreret partnerskab efter dansk ret.
+
+...
 
 ## Kapitel 3: Ægteskabs omstødelse
 
@@ -152,6 +191,8 @@ Also, from [the authorative xml versdion of the document](https://www.retsinform
 it is clear that `Enighed` and `Uenighed` are to be considered as subheadings
 under `Kapitel 4` (so called paragraph-groups), but *Docling* interprets them as
 being both at level 2.
+Again *tika[md]* does not mark any of the headings, but it does collect the 
+chapter title on the same line as the counter.
 
 A more serious failure in recognising the headers and other section separators
 are seen from this example
@@ -223,7 +264,8 @@ which obsures the readbility of the output compared to *Tika*s plain text output
 > ```
 
 Thus, *Tika* also misses the horizontal ruler, but very important manages to get
-the all the text (including also the [footer](#footers-incl-page-numbering)).
+the all the text (including also the [footer](#footers-incl-page-numbering)). 
+*Tika[md]* produces almost the same output as *Tika* in this case.
 
 ### Conclusion/Preference
 
@@ -233,6 +275,10 @@ the all the text (including also the [footer](#footers-incl-page-numbering)).
   a [known limitation](https://github.com/docling-project/docling/discussions/386)
   for pdfs, but should be distinguised for eg. docx. 
 - *Docling* misses some headings, which is a quite serious flaw
+- *Tika[md]* surprisingly doesn't recognise any headings (but it does so 
+  consistently).
+- Both *Tika* and *Tika[md]* manage to collect the chapter numbering "Kapitel #" 
+  with the chapter title.
 
 ## Listings
 
@@ -331,6 +377,45 @@ For comparison *Tika* writes the section as:
 where some spurrious newlines might distrub the interpretation a little bit 
 depending on the actual LLM used.
 
+For *tika[md]* the output was:
+
+> ```markdown
+> Kapitel 2 a Anerkendelse af ægteskaber, der er indgået i udlandet
+> 
+> § 22 b. Et ægteskab, der er indgået i udlandet, anerkendes, hvis ægteskabet er
+> gyldigt i det land, hvor ægteskabet er indgået, jf. dog stk. 2.
+> 
+> Stk. 2. Et ægteskab, der er indgået i udlandet, anerkendes ikke, 1) hvis
+> parterne ikke var samtidig til stede ved vielsen, 2) hvis der er bestemte
+> grunde til at antage, at der er tale om et proformaægteskab, der blev indgået
+> med
+> 
+> det afgørende formål at opnå ret til ophold i Danmark, i et land, der er
+> tilsluttet Den Europæiske Uni- on eller er omfattet af aftalen om Det
+> Europæiske Økonomiske Samarbejdsområde, eller i Schweiz,
+> 
+> 3) hvis en part ved vielsen ikke var fyldt 18 år, eller 4) hvis anerkendelse
+> af ægteskabet strider mod grundlæggende danske retsprincipper.
+> 
+> Stk. 3. Uanset stk. 2 anerkendes ægteskabet, hvis der foreligger tvingende
+> grunde herfor og parterne stilles i en urimelig situation, hvis ægteskabet
+> ikke anerkendes.
+> 
+> Stk. 4. Betingelsen i stk. 2, nr. 3, gælder ikke for EU-/EØS-borgere og disses
+> ægtefæller.
+> 
+> § 22 c. Et registreret partnerskab, der er indgået i udlandet, anerkendes,
+> hvis betingelserne i § 22 b er opfyldt og retsvirkningerne af partnerskabet
+> svarer til retsvirkningerne af registreret partnerskab efter dansk ret.
+> 
+> Kapitel 3 Ægteskabs omstødelse
+> 
+> § 23. Et ægteskab omstødes, hvis det er indgået i strid med § 6 eller § 9.
+> ```
+where the list-recognition actually performs worse if we focus on the sublist for 
+"stk. 2.", which is not recognised at all, but for "3)" that randomly ends up at 
+the beginning of a line. 
+
 *Docling* generally seems to be consistent on recognising lists, but also makes
 mistakes as seen eg. here:
 
@@ -356,6 +441,8 @@ where `Stk. 2. Den myndighed, som ...` should also be listed as a point to stay 
 - As any list item is threated on equal footing there isn't much difference
   between having the list indicated in markdown and not having any markup on
   lists (as *Tika* does)
+- *Tika[md]* concatenates lines and thus miss lists that would otherwise just
+  be.
 
 ## Footers (incl page numbering)
 
@@ -366,8 +453,8 @@ For a footer in a pdf:
 *Docling*: Ignores the information in the footer, both page numbering and the
 text.
 
-*Tika*: Writes the text and the page number on the same line separated by a space
-interrupting the text flow for the main content.
+Both *Tika* and *Tika[md]*: Writes the text and the page number on the same line
+separated by a space interrupting the text flow for the main content.
 
 > ```text
 > jf. lovbekendtgørelse nr. 54 af 23. januar 2018, og af § 21, stk. 1, i navneloven, jf. lovbekendtgørelse 
@@ -419,11 +506,23 @@ and
 respectively. The reason the link is not detected in the first case, might be
 because it is only identified as a heading.
 
+*Tika[md]* on the other hand seems to be very good at recognising the links from 
+docx (also from within tables). For the case of the headline, where *Docling* 
+misses the link, *Tika[md]* outputs:
+
+> ```markdown
+> ##  OBS: Ved alle registreringer skal vi se den originale vielsesattest som vi
+> tager kopi af, eller have en bekræftet kopi. Samtidig skal alle par udfylde
+> skema ”Oplysninger om udenlandsk vielse” [Microsoft Word - Oplysningsskema -
+> til hjemmesiden.docx
+> (familieretshuset.dk)](https://familieretshuset.dk/media/1325/oplysninger_om_udenlandsk_vielse_skema.pdf)
+> ```
+
 ### Conclusion/preference
 
 - It seems very important to be able to provide links to a user through the LLM,
   in order to do so, the link is needed in the raw material, so here *Docling*
-  is prefere over *Tika*
+  is prefere over plain *Tika*, but *Tika[md]* seems to be the better solution.
 
 ## Tables
 
@@ -460,6 +559,9 @@ as lists and tables:
 which is just inconsistent. The fact that the first item in the ToC after a
 newpage becomes a header in the table gives more confusing than structure, but
 whether it would be critical for an advanced LLM I don't think so.
+*Tika[md]* does not confuse this as a table, but also not as a list. Instead 
+again *Tika[md]* concatenates the lines in the ToC, so there is actually less
+structure than in the output produced by *Tika*. 
 
 But for an actual table like:
 
@@ -478,7 +580,25 @@ But for an actual table like:
 > | #6  | Nej                                     | Ja                                              | Ikke nødvendigt                        | Ja                     | Nej                                            | Fra Østrig kan udlændinge ikke få udstedt civilstandsattest. Kun hvis de er blevet gift i Østrig.                                                             |
 > ```
 
-is far superior to *Tika*s
+and *tika[md]*
+
+> ```markdown
+> |  **Kræves der legalisering af dokumenter** |  **Kan der indhentes civilstand/ prøvelsesattest** |  **Kan der laves en Apostillepåtegning?** |  **Medlem af Schengen ?** |  **Visumpligtig?** |  **Andet**  
+> ---|---|---|---|---|---|---  
+> #1 |  **Ja** |  **Ja – OBS kan pt ikke fås fra Kina** |  **Nej** |  **Nej** |  **Ja** |   
+> #2 |  **Ja** |  **Ja** |  **Ja** |  **Nej** |  **Ja** |   
+> #3 |  **Ja** |  **Ja** |  **Nej** |  **Nej** |  **Ja** |  **Da mange dokumenter fra de afrikanske lande er falske, skal pas og visum scannes og sendes til godkendelse ved Grænsepolitiet. Andre dokumenter beror på skøn**  
+> #4 |  **Ja** |  **Ja** |  **Ja** |  **Nej** |  **Nej** |   
+> #5 |  **Nej** |  **Ja** |  **Ikke nødvendigt** |  **Nej** |  **Nej** |  **Fra Canada udsteder de ikke civilstandsattester men kan få lavet ”Staement in lieu of certificate of non-impediment”**  
+> #6 |  **Nej** |  **Ja** |  **Ikke nødvendigt** |  **Ja** |  **Nej** |  **Fra Østrig kan udlændinge ikke få udstedt civilstandsattest. Kun hvis de er blevet gift i Østrig.**
+> ```
+
+which doesn't render as well in plain text, but still keeps the important 
+markdown table structure, that an LLM might understand. 
+*tika[md]* as can be seen also recognises markup in the cells. This also goes for
+links, that *Docling* again misses (like it does i headlines).
+
+Both are far superior to *Tika*s
 
 > ```text
 > 	
@@ -539,24 +659,32 @@ implement a table lookup tool by hand.
 
 ### Conclusion/Preferences
 
-- *Docling* is impressive in creating markdown tables whereas *Tika*s table 
-  functionality is non existent
+- *Docling* and *Tika[md]* are impressive in creating markdown tables 
+  whereas *Tika*s table functionality is non existent.
+- *Tika[md]* also (very important) detects markup (specially links) in the cells
 - The markdown table functionality is only usefull if the LLM can actually 
   understand the tables and that would require seperate testing.
 
 ## General markup
 
-For bold and italic markup *Docling* seems to do quite well (as least for docx). 
+For bold and italic markup *Docling* seems to do quite well (as least for docx).
+*Tika[md]* to parse it perfectly.
 *Tika* only outputs plain text. 
 
 A general example can be seen here
 
 ![View from docx where different setting types that are interpreted the same by Docling is marked](screendumps/markup_detection_overall-Hvem_skal_registrer_en_vielse_og_navneaendring.png "General human markup in docx")
 
-Where *Tika* just outputs plain text, *Docling* tries to make sense of the 
+Where *Tika* just outputs plain text, *Docling* and *Tika[md]* tries to make sense of the 
 markup. The headlines marked with orange are all marked in word as header level 3
 and this *Docling* trusts, eventhough it seems that for the `OBS: Ved ...` 
 text at the begining "header 3" is just used as a way to put emphasis on the text.
+*Tika[md]* translate it into header level 2, though, which is just a question of 
+the mapping between word markup and markdown markup. *Docling* probably reserves 
+markdown header level 1 for Words "title" tag and then maps Words header level 1 
+to markdown header level 2 and so forth. 
+*Tika[md]* probably maps both Words "title" and Words header level 1 to markdown
+header level 1.
 
 The bold italic text marked with green are also just transcribed as such although 
 the author seems to think the text `For Folke...` is more important as this is set
@@ -606,7 +734,8 @@ and *Tika* produces:
 - In everyday use the markup functionality (particularly in word is misused to 
   such an extent that it obscurres otherwise very useful markup.
   - Headings are not used consistenly by authors
-  - *Docling* does not account for font-size when analysing docx (by default at least)
+  - *Docling* and *Tika[md]* do not account for font-size when analysing docx (by
+    default at least)
 
 ## OCR performance / PDFs with (only) full page images
 
@@ -642,8 +771,9 @@ Important: Even with the OCR forced *Docling* is still able to recognise images,
 which could then be described.
 
 *Tika*s OCR engine struggles with lists. points are transcribed as `e`. 
-Additionally, danish æ, ø and å are not recognised and transcribed in various 
-ways. The text is still relatively easily read and at least some LLMs I would
+Additionally, danish æ, ø and å are occasionally not recognised and transcribed wrongly.
+But most often it gets it right and importantly the text is still relatively easily read 
+and at least some LLMs I would
 assume wouldn't be troubled making sense of the transcribtion.
 
 ### Conclusion/preferences
@@ -656,7 +786,10 @@ assume wouldn't be troubled making sense of the transcribtion.
     It might be needed to check if text is available from the pdf and ensure that
     it is indeed a pdf-document before forcing OCR. 
     That kind of logic would also require extending OWUI
-- When *Docling*s EasyOCR engine kicks in, it generally performs better than 
+- [**NOTE: this point is outdated with the updated tika server as this now actually
+  works with danish for the OCR engine**] 
+  
+  When *Docling*s EasyOCR engine kicks in, it generally performs better than 
   [*Tika*s tesseractOCR engine](https://cwiki.apache.org/confluence/display/TIKA/Configuring+Parsers+At+Parse+Time+in+tika-server).
   Better performance would be expected at least for the danish characters if it
   was [configured to expect danish](
