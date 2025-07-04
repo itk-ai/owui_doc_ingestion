@@ -15,13 +15,18 @@ a good markup language for LLMs. Instead, it would require that the xHTML is the
 parsed as markdown using e.g. pandoc, which would introduce another step in the 
 pipeline.
 
+This have been done by extending the [`TikaLoader`-class](../src/owui_doc_ingestion/doc_loaders/tika.py) 
+compared to the one used by OWUI, so it now also outputs markdown. 
+This have been done in order to also assess *Tika*s ability to extract structure 
+from documents. Choices are documented [here](tika_html2md.md).
+
 Note, that also *Docling* can be configured a lot more than the chosen settings
 in OWUI.
 
 ### TODOs
 
-- TODO: Set up a direct tika pipeline, where xHTML is outputted and converted to 
-        markdown.
+- [Done] Set up a direct tika pipeline, where xHTML is outputted and converted to 
+         markdown.
 
 ### Table of content
 
